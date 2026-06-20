@@ -1,23 +1,19 @@
 #include <iostream>
 #include <fstream>
-#include <random>
+#include <cstdlib>
 #include <string>
 #include <unordered_set>
 
 int main() {
 
-    // Group leader student ID seed number : 2421324366
-    unsigned long long seed = 2421324366ULL;
-    std::mt19937_64 generator(seed);
-
-    std::uniform_int_distribution<long long> size_dist(1000, 1000000);
-    std::uniform_int_distribution<unsigned long long> int_dist(1000000000ULL, 9999999999ULL);
-    std::uniform_int_distribution<int> letter_dist(0, 25);
+    // seed from student ID
+    srand(2421324366);
 
     long long sizes[10];
 
+    // generate 10 dataset sizes
     for (int i = 0; i < 10; ++i) {
-        sizes[i] = size_dist(generator);
+        sizes[i] = 1000 + (rand() % 990001); // 1000 to 1,000,000
     }
 
     // generate datasets
@@ -38,13 +34,16 @@ int main() {
 
         while (generated_count < n) {
 
-            unsigned long long random_id = int_dist(generator);
+            // 10-digit number range
+            unsigned long long random_id =
+                1000000000ULL + (rand() % 9000000000ULL);
 
             if (unique_integers.insert(random_id).second) {
 
                 std::string random_string;
+
                 for (int j = 0; j < 5; ++j) {
-                    random_string += 'a' + letter_dist(generator);
+                    random_string += 'a' + (rand() % 26);
                 }
 
                 outputFile << random_id << "," << random_string << "\n";
