@@ -1,59 +1,58 @@
 #include <iostream>
 #include <fstream>
-#include <cstdlib>
+#include <random>
 #include <string>
 #include <unordered_set>
 
 int main() {
 
-    // seed from student ID
-    srand(2421324366);
+    // Group leader student ID seed number : 2421324366
+    std::mt19937_64 srand2(2421324366ULL);
 
-    long long sizes[10];
+    long long n;
 
-    // generate 10 dataset sizes
-    for (int i = 0; i < 10; ++i) {
-        sizes[i] = 1000 + (rand() % 990001); // 1000 to 1,000,000
+    std::cout << "Please enter dataset size: ";
+    std::cin >> n;
+
+    std::string filename = "dataset_" + std::to_string(n) + ".csv";
+    std::ofstream outputFile(filename);
+
+    if (!outputFile.is_open()) {
+        std::cerr << "Error: unable to open file." << std::endl;
+        return 1;
     }
 
-    // generate datasets
-    for (int i = 0; i < 10; ++i) {
+    std::uniform_int_distribution<unsigned long long> int_dist(
+        1000000000ULL, 9999999999ULL);
 
-        long long n = sizes[i];
+    std::uniform_int_distribution<int> letter_dist(0, 25);
 
-        std::string filename = "dataset_" + std::to_string(n) + ".csv";
-        std::ofstream outputFile(filename);
+    std::unordered_set<unsigned long long> unique_integers;
 
-        if (!outputFile.is_open()) {
-            std::cerr << "error opening file" << std::endl;
-            return 1;
-        }
+    long long generated_count = 0;
 
-        std::unordered_set<unsigned long long> unique_integers;
-        long long generated_count = 0;
+    //std::cout << "Generating " << filename << "..." << std::endl;
 
-        while (generated_count < n) {
+    while (generated_count < n) {
 
-            // 10-digit number range
-            unsigned long long random_id =
-                1000000000ULL + (rand() % 9000000000ULL);
+        unsigned long long random_id = int_dist(srand2);
 
-            if (unique_integers.insert(random_id).second) {
+        if (unique_integers.insert(random_id).second) {
 
-                std::string random_string;
+            std::string random_string;
 
-                for (int j = 0; j < 5; ++j) {
-                    random_string += 'a' + (rand() % 26);
-                }
-
-                outputFile << random_id << "," << random_string << "\n";
-                generated_count++;
+            for (int i = 0; i < 5; ++i) {
+                random_string += 'a' + letter_dist(srand2);
             }
-        }
 
-        outputFile.close();
-        std::cout << "Dataset generated complete: " << filename << std::endl;
+            outputFile << random_id << "," << random_string << "\n";
+            generated_count++;
+        }
     }
+
+    outputFile.close();
+
+    std::cout << "dataset generated complete: " << filename << std::endl;
 
     return 0;
 }
