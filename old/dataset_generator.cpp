@@ -1,3 +1,5 @@
+// dataset_generator.cpp by user input
+
 #include <iostream>
 #include <fstream>
 #include <random>
@@ -14,29 +16,31 @@ int main() {
     std::cout << "Please enter dataset size: ";
     std::cin >> n;
 
+    // generate filename based on input size
     std::string filename = "dataset_" + std::to_string(n) + ".csv";
     std::ofstream outputFile(filename);
 
+    // error handling for file opening
     if (!outputFile.is_open()) {
         std::cerr << "Error: unable to open file." << std::endl;
         return 1;
     }
 
-    std::uniform_int_distribution<unsigned long long> int_dist(
-        1000000000ULL, 9999999999ULL);
-
+    // distribution for 10-digit integersand 5-letter strings
+    std::uniform_int_distribution<unsigned long long> int_dist(1000000000ULL, 9999999999ULL);
     std::uniform_int_distribution<int> letter_dist(0, 25);
-
     std::unordered_set<unsigned long long> unique_integers;
 
     long long generated_count = 0;
 
     //std::cout << "Generating " << filename << "..." << std::endl;
 
+    // generate loop until input size n is reached  
     while (generated_count < n) {
 
         unsigned long long random_id = int_dist(srand2);
 
+        // check: unique integer to avoid duplicates
         if (unique_integers.insert(random_id).second) {
 
             std::string random_string;

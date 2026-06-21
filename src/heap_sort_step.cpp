@@ -10,8 +10,8 @@
 // Member_4: 1231302335 | ABAZAR ADAM HUMED MOHAMEDALI | abazaradamwork@gmail.com | +60175803025
 // *********************************************************
 // Task Distribution
-// Member_1 (Hadi Abdulla): Dataset generator, experiment runs, documentation
-// Member_2 (Nurul Asyiqin): Radix sort (step + full), experiment runs, documentation
+/// Member_1 (Hadi Abdulla): Radix sort (step + full), experiment runs, documentation
+// Member_2 (Nurul Asyiqin): Dataset generator, experiment runs, documentation
 // Member_3 (Lim Chin Wei): Heap sort (step + full), experiment runs, documentation
 // Member_4 (Abazar Adam): Hash table search (step + full), experiment runs, documentation
 // *********************************************************
