@@ -10,8 +10,8 @@
 // Member_4: 1231302335 | ABAZAR ADAM HUMED MOHAMEDALI | abazaradamwork@gmail.com | +60175803025
 // *********************************************************
 // Task Distribution
-// Member_1 (Hadi Abdulla): Dataset generator, experiment runs, documentation
-// Member_2 (Nurul Asyiqin): Radix sort (step + full), experiment runs, documentation
+// Member_1 (Hadi Abdulla): Radix sort (step + full), experiment runs, documentation
+// Member_2 (Nurul Asyiqin): Dataset generator, experiment runs, documentation
 // Member_3 (Lim Chin Wei): Heap sort (step + full), experiment runs, documentation
 // Member_4 (Abazar Adam): Hash table search (step + full), experiment runs, documentation
 // *********************************************************
@@ -28,12 +28,13 @@ int main() {
     // Seed = group leader student ID 242UC243PP mapped to digits (2421324366).
     mt19937_64 rng(2421324366ULL);
 
-    // Input: one dataset size n. Uncomment exactly one line.
-    long long n = 1000;
-    // long long n = 10000;
-    // long long n = 100000;
-    // long long n = 1000000;
-    // long long n = 10000000;
+    // Input dataset size
+    long long n;
+    cout << "please enter dataset size: ";
+    if (!(cin >> n) || n <= 0) {
+        cerr << "error: invalid dataset size entered.\n";
+        return 1;
+    }
 
     // 10-digit positive integers: 1,000,000,000 .. 9,999,999,999
     const long long LOW  = 1000000000LL;
