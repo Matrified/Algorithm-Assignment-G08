@@ -131,9 +131,11 @@ static size_t pickBucketCount(long long n) {
 int main() {
     // Input (uncomment exactly one block).
     string inputFile = "dataset_1000.csv";
-    long long n = 1000;
-    long long foundTarget = 0;        // 0 = auto-pick an existing key (first row)
-    long long notFoundTarget = 123456789;  // 9-digit value can never exist in a 10-digit set
+long long n = 1000;
+
+// set found target explicitly as in the sample
+long long foundTarget = 8937497183;  // key from the first row of dataset_1000.csv
+long long notFoundTarget = 123456789;  // 9-digit value can never exist in a 10-digit set
 
     ifstream in(inputFile);
     if (!in) {
