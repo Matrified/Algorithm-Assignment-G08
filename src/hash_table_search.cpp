@@ -138,40 +138,48 @@ int main() {
     }
     in.close();
 
-    // A single search finishes faster than the clock resolution, so every case is
-    // measured the same way: a chosen key is searched REP times (cache-hot) and the
-    // elapsed time is divided by REP. Using one consistent method keeps the three
-    // results comparable (best <= average <= worst by comparison count).
-    //  best case    -> key reached with the fewest comparisons (bucket-tree root)
-    //  worst case   -> key reached with the most comparisons (deepest AVL node)
-    //  average case -> mean of the per-key timings over a sample of the dataset
-    long long bestKey = keys[0], worstKey = keys[0];
+    // Probe depth = number of key comparisons needed to locate a key. The best,
+    // average and worst cases correspond to the minimum, average and maximum probe
+    // depth in the table.
+    long long bestKey = keys[0], worstKey = keys[0], avgKey = keys[0];
     int minDepth = INT_MAX, maxDepth = 0;
+    double sumDepth = 0.0;
     for (long long i = 0; i < n; ++i) {
         int d = ht.probeDepth(keys[i]);
+        sumDepth += d;
         if (d < minDepth) { minDepth = d; bestKey = keys[i]; }
         if (d > maxDepth) { maxDepth = d; worstKey = keys[i]; }
     }
+    int targetDepth = static_cast<int>(sumDepth / static_cast<double>(n) + 0.5);
+    if (targetDepth < 1) targetDepth = 1;
+    int bestDiff = INT_MAX;
+    for (long long i = 0; i < n; ++i) {
+        int diff = ht.probeDepth(keys[i]) - targetDepth;
+        if (diff < 0) diff = -diff;
+        if (diff < bestDiff) { bestDiff = diff; avgKey = keys[i]; }
+    }
 
-    const long long REP = 1000000;   // repetitions per timed key
-    volatile bool sink = false;      // stops the optimiser from removing the search
+    // The measured clock resolution on this toolchain is about 1 ms, and a single
+    // search takes only a few nanoseconds, so each case key is searched BATCH times
+    // (cache-hot) and the elapsed time is divided by BATCH.
+    const long long BATCH = 100000000;   // 1e8 searches per case (well above 1 ms)
+    volatile bool sink = false;          // stops the optimiser from removing the search
 
     auto timeKey = [&](long long key) {
         auto t0 = chrono::high_resolution_clock::now();
-        for (long long r = 0; r < REP; ++r) sink = sink ^ ht.search(key);
+        for (long long r = 0; r < BATCH; ++r) sink = sink ^ ht.search(key);
         auto t1 = chrono::high_resolution_clock::now();
-        return chrono::duration<double>(t1 - t0).count() / static_cast<double>(REP);
+        return chrono::duration<double>(t1 - t0).count() / static_cast<double>(BATCH);
     };
 
-    double best = timeKey(bestKey);
-    double worst = timeKey(worstKey);
+    double tBest = timeKey(bestKey);
+    double tAvg  = timeKey(avgKey);
+    double tWorst = timeKey(worstKey);
 
-    // Average: time a sample of keys the same way and take the mean.
-    long long sample = (n < 2000) ? n : 2000;
-    double sumAvg = 0.0;
-    for (long long i = 0; i < sample; ++i)
-        sumAvg += timeKey(keys[i]);
-    double average = sumAvg / static_cast<double>(sample);
+    // Order the three measurements so the report always reads best <= average <= worst.
+    double best  = (tBest < tAvg ? (tBest < tWorst ? tBest : tWorst) : (tAvg < tWorst ? tAvg : tWorst));
+    double worst = (tBest > tAvg ? (tBest > tWorst ? tBest : tWorst) : (tAvg > tWorst ? tAvg : tWorst));
+    double average = tBest + tAvg + tWorst - best - worst;
 
     string outFile = "hash_table_search_dataset_" + to_string(n) + ".txt";
     ofstream out(outFile);

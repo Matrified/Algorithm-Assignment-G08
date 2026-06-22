@@ -28,11 +28,11 @@ int main() {
     // Seed = group leader student ID 242UC243PP mapped to digits (2421324366).
     mt19937_64 rng(2421324366ULL);
 
-    // Input dataset size
+    // Input dataset size (entered by the user).
     long long n;
-    cout << "please enter dataset size: ";
+    cout << "Please enter dataset size: ";
     if (!(cin >> n) || n <= 0) {
-        cerr << "error: invalid dataset size entered.\n";
+        cerr << "Error: invalid dataset size entered.\n";
         return 1;
     }
 
