@@ -56,7 +56,7 @@ static void radixSort(vector<Element>& a) {
 }
 
 int main() {
-    // Input (uncomment exactly one line).
+    // Input 
     string inputFile = "dataset_1000000.csv";
     long long n = 1000000;
     // string inputFile = "dataset_1000.csv"; long long n = 1000;

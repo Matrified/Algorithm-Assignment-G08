@@ -28,13 +28,11 @@ int main() {
     // Seed = group leader student ID 242UC243PP mapped to digits (2421324366).
     mt19937_64 rng(2421324366ULL);
 
-    // Input dataset size (entered by the user).
-    long long n;
-    cout << "Please enter dataset size: ";
-    if (!(cin >> n) || n <= 0) {
-        cerr << "Error: invalid dataset size entered.\n";
-        return 1;
-    }
+    // Input: dataset size n.
+    long long n = 1000;
+    // long long n = 1000000;
+    // long long n = 10000000;
+    // long long n = 100000000;
 
     // 10-digit positive integers: 1,000,000,000 .. 9,999,999,999
     const long long LOW  = 1000000000LL;
